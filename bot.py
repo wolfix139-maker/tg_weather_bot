@@ -114,19 +114,33 @@ async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 def main():
     if not TELEGRAM_TOKEN:
-        raise RuntimeError("Не найден TELEGRAM_TOKEN. Добавь переменную окружения в Run Configuration.")
+        raise RuntimeError("Не найден TELEGRAM_TOKEN. Добавь переменную окружения.")
 
     app = Application.builder().token(TELEGRAM_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("weather", weather))
     app.add_handler(CommandHandler("help", help_cmd))
-    app.add_handler(CommandHandler("location", location_cmd))  # ← добавили
+    app.add_handler(CommandHandler("location", location_cmd))
+
     app.add_handler(MessageHandler(filters.LOCATION, handle_location))
-
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
-    print("✅ Bot started. Waiting for messages...")
-    app.run_polling()
 
+    PORT = int(os.getenv("PORT", "8000"))
+    WEBHOOK_BASE_URL = os.getenv("https://varied-anthe-wheatherbot-50058ff1.koyeb.app/")  # например: https://your-service.koyeb.app
+    WEBHOOK_PATH = os.getenv("WEBHOOK_PATH", "tg-webhook")
+
+    print("✅ Bot started")
+
+    if WEBHOOK_BASE_URL:
+        app.run_webhook(
+            listen="0.0.0.0",
+            port=PORT,
+            url_path=WEBHOOK_PATH,
+            webhook_url=f"{WEBHOOK_BASE_URL}/{WEBHOOK_PATH}",
+            drop_pending_updates=True,
+        )
+    else:
+        app.run_polling()
 if __name__ == "__main__":
-    main()
+            main()
