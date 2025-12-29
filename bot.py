@@ -126,12 +126,11 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
 
     PORT = int(os.getenv("PORT", "8000"))
-    WEBHOOK_BASE_URL = os.getenv("WEBHOOK_BASE_URL")  # берем из Koyeb env vars
+    WEBHOOK_BASE_URL = os.getenv("WEBHOOK_BASE_URL")
 
     print("✅ Bot started")
 
     if WEBHOOK_BASE_URL:
-        # Облако: webhook на корне /
         app.run_webhook(
             listen="0.0.0.0",
             port=PORT,
@@ -140,7 +139,6 @@ def main():
             drop_pending_updates=True,
         )
     else:
-        # Локально: polling
         app.run_polling()
 
 
