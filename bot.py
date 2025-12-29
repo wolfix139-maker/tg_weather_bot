@@ -127,7 +127,7 @@ def main():
 
     PORT = int(os.getenv("PORT", "8000"))
     WEBHOOK_BASE_URL = os.getenv("WEBHOOK_BASE_URL")      # <-- берем из env
-    WEBHOOK_PATH = os.getenv("WEBHOOK_PATH", "tg-webhook")
+    WEBHOOK_PATH = os.getenv("WEBHOOK_PATH", "")
 
     print("✅ Bot started")
 
@@ -136,12 +136,13 @@ def main():
             listen="0.0.0.0",
             port=PORT,
             url_path=WEBHOOK_PATH,
-            webhook_url=f"{WEBHOOK_BASE_URL.rstrip('/')}/{WEBHOOK_PATH}",
+            webhook_url=f"{WEBHOOK_BASE_URL.rstrip('/')}/",
             drop_pending_updates=True,
-        )
+            )
     else:
         app.run_polling()
 
 
 if __name__ == "__main__":
     main()
+
