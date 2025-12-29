@@ -127,20 +127,21 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
 
     PORT = int(os.getenv("PORT", "8000"))
-    WEBHOOK_BASE_URL = os.getenv("https://varied-anthe-wheatherbot-50058ff1.koyeb.app/")  # например: https://your-service.koyeb.app
-    WEBHOOK_PATH = os.getenv("WEBHOOK_PATH", "tg-webhook")
+WEBHOOK_BASE_URL = os.getenv("WEBHOOK_BASE_URL")  # берем из env vars
+WEBHOOK_PATH = os.getenv("WEBHOOK_PATH", "tg-webhook")
 
-    print("✅ Bot started")
+print("✅ Bot started")
 
-    if WEBHOOK_BASE_URL:
-        app.run_webhook(
-            listen="0.0.0.0",
-            port=PORT,
-            url_path=WEBHOOK_PATH,
-            webhook_url=f"{WEBHOOK_BASE_URL}/{WEBHOOK_PATH}",
-            drop_pending_updates=True,
-        )
-    else:
-        app.run_polling()
+if WEBHOOK_BASE_URL:
+    app.run_webhook(
+        listen="0.0.0.0",
+        port=PORT,
+        url_path=WEBHOOK_PATH,
+        webhook_url=f"{WEBHOOK_BASE_URL.rstrip('/')}/{WEBHOOK_PATH}",
+        drop_pending_updates=True,
+    )
+else:
+    app.run_polling()
 if __name__ == "__main__":
-            main()
+     main()
+
